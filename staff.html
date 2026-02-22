@@ -6,223 +6,446 @@
   <title>บุคลากร - วิทยาลัยพณิชยการบางนา</title>
   <link rel="stylesheet" href="assets/css/style.css">
   <style>
-    /* ── layout: sidebar flush left ── */
-    .staff-page-wrap { display: flex; align-items: flex-start; }
+    /* ── layout: sidebar + content ── */
+    .staff-page-wrap {
+      display: flex;
+      align-items: flex-start;
+      min-height: calc(100vh - 140px);
+    }
 
+    /* ── sidebar (desktop) ── */
     .filter-sidebar {
-      position: sticky; top: 72px;
-      width: 240px; min-width: 240px;
-      max-height: calc(100vh - 80px); overflow-y: auto;
-      background: var(--surface); border-right: 1px solid var(--border);
-      padding: 24px 16px 28px 20px; flex-shrink: 0;
+      position: sticky;
+      top: 72px;
+      width: 240px;
+      min-width: 240px;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px 28px 20px;
+      flex-shrink: 0;
     }
     .filter-sidebar h2 {
-      font-family: "Noto Serif Thai",serif;
-      font-size: 0.92rem; font-weight: 700; color: var(--primary);
-      margin-bottom: 16px; padding-bottom: 10px;
+      font-family: "Noto Serif Thai", serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
       border-bottom: 2px solid var(--accent);
-      display: flex; align-items: center; gap: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .filter-group { margin-bottom: 18px; }
     .filter-group-title {
-      font-size: 0.7rem; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 7px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 7px;
     }
     .filter-search {
-      width: 100%; padding: 8px 10px;
-      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-      font-family: "Sarabun",sans-serif; font-size: 0.84rem;
-      background: var(--surface-2); color: var(--text);
-      outline: none; transition: border-color 0.2s; box-sizing: border-box;
+      width: 100%;
+      padding: 8px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: "Sarabun", sans-serif;
+      font-size: 0.84rem;
+      background: var(--surface-2);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
     }
     .filter-search:focus { border-color: var(--primary-light); }
     .filter-checkbox-group { display: flex; flex-direction: column; gap: 2px; }
     .filter-label {
-      display: flex; align-items: center; gap: 7px; cursor: pointer;
-      font-size: 0.79rem; color: var(--text-2);
-      padding: 4px 6px; border-radius: 6px; transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      font-size: 0.79rem;
+      color: var(--text-2);
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: background 0.15s;
     }
     .filter-label:hover { background: var(--surface-2); }
     .filter-label input[type="checkbox"] {
-      accent-color: var(--primary); width: 13px; height: 13px; flex-shrink: 0;
+      accent-color: var(--primary);
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
     }
     .filter-count {
-      margin-left: auto; font-size: 0.67rem;
-      background: var(--surface-2); border: 1px solid var(--border);
-      border-radius: 20px; padding: 1px 6px; color: var(--muted);
+      margin-left: auto;
+      font-size: 0.67rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1px 6px;
+      color: var(--muted);
     }
     .filter-reset-btn {
-      width: 100%; padding: 8px; border-radius: var(--radius-sm);
-      font-size: 0.79rem; font-weight: 600; font-family: "Sarabun",sans-serif;
-      background: var(--surface-2); border: 1.5px solid var(--border);
-      color: var(--muted); cursor: pointer; transition: var(--transition); margin-top: 6px;
+      width: 100%;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.79rem;
+      font-weight: 600;
+      font-family: "Sarabun", sans-serif;
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 6px;
     }
-    .filter-reset-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(37,99,235,0.06); }
+    .filter-reset-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(37, 99, 235, 0.06);
+    }
+
+    /* ── toggle button: HIDDEN on desktop, shown only on mobile ── */
+    .sidebar-toggle-btn { display: none; }
 
     /* ── content ── */
-    .staff-content { flex: 1; min-width: 0; padding: 24px 24px 48px; }
+    .staff-content {
+      flex: 1;
+      min-width: 0;
+      padding: 24px 24px 48px;
+    }
 
     /* ── summary bar ── */
     .staff-summary-bar {
-      display: flex; align-items: center; flex-wrap: wrap; gap: 14px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 12px 16px;
-      margin-bottom: 16px; box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
     }
     .sum-total { font-size: 0.84rem; color: var(--muted); }
     .sum-total strong { color: var(--primary); font-size: 1.05rem; font-weight: 700; }
     .sum-sep { width: 1px; height: 18px; background: var(--border); }
     .sum-tab { font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-    .tab-badge { background: var(--primary); color: #fff; border-radius: 20px; padding: 1px 9px; font-size: 0.77rem; font-weight: 700; }
+    .tab-badge {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 20px;
+      padding: 1px 9px;
+      font-size: 0.77rem;
+      font-weight: 700;
+    }
     .sum-filtered { margin-left: auto; font-size: 0.79rem; color: var(--muted); }
     .sum-filtered strong { color: var(--primary); }
 
     /* ── tabs ── */
-    .staff-tabs-wrapper { margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+    .staff-tabs-wrapper {
+      margin-bottom: 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
     #staffTabs { display: flex; gap: 6px; min-width: max-content; }
     .tab-btn {
-      padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600;
-      font-family: "Sarabun",sans-serif; color: var(--muted);
-      background: var(--surface); border: 1.5px solid var(--border);
-      white-space: nowrap; transition: var(--transition); cursor: pointer;
-      display: flex; align-items: center; gap: 5px;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: "Sarabun", sans-serif;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      white-space: nowrap;
+      transition: var(--transition);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
     .tab-btn:hover { border-color: var(--primary-light); color: var(--primary); }
-    .tab-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 3px 10px rgba(30,58,138,0.25); }
-    .tab-num { font-size: 0.68rem; background: rgba(255,255,255,0.2); border-radius: 10px; padding: 0 5px; }
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(30, 58, 138, 0.25);
+    }
+    .tab-num {
+      font-size: 0.68rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 0 5px;
+    }
     .tab-btn:not(.active) .tab-num { background: var(--surface-2); color: var(--muted); }
 
-    /* ── grid: auto-fill ≥140px ── */
+    /* ── staff grid ── */
     #staffContainer {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 14px; min-height: 200px;
+      gap: 14px;
+      min-height: 200px;
     }
 
-    /* ── card ── */
+    /* ── staff card ── */
     .staff-card {
-      text-align: center; cursor: pointer;
-      background: var(--surface); border-radius: var(--radius);
+      text-align: center;
+      cursor: pointer;
+      background: var(--surface);
+      border-radius: var(--radius);
       padding: 14px 10px 12px;
-      border: 1px solid var(--border); box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
       transition: transform 0.3s, box-shadow 0.3s;
     }
     .staff-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
     .staff-card:focus-visible { outline: 3px solid var(--primary-light); outline-offset: 3px; }
 
-    /* รูปในการ์ด — fixed 3:4 */
     .s-img-wrap {
-      width: 80px; height: 107px;
-      margin: 0 auto 10px; overflow: hidden;
-      border-radius: 7px; border: 2px solid var(--border);
-      background: var(--surface-2); flex-shrink: 0;
+      width: 80px;
+      height: 107px;
+      margin: 0 auto 10px;
+      overflow: hidden;
+      border-radius: 7px;
+      border: 2px solid var(--border);
+      background: var(--surface-2);
     }
     .s-img-wrap img {
-      width: 80px; height: 107px;
-      object-fit: cover; display: block;
+      width: 80px;
+      height: 107px;
+      object-fit: cover;
+      display: block;
       transition: transform 0.4s;
     }
     .staff-card:hover .s-img-wrap img { transform: scale(1.06); }
 
-    /* placeholder */
     .s-img-wrap .ph {
-      width: 80px; height: 107px;
-      display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg,#e2e8f0,#cbd5e1); color: #94a3b8;
+      width: 80px;
+      height: 107px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+      color: #94a3b8;
     }
-    body.dark .s-img-wrap .ph { background: linear-gradient(135deg,#1e2535,#253047); }
+    body.dark .s-img-wrap .ph { background: linear-gradient(135deg, #1e2535, #253047); }
 
-    .s-name { font-size: 0.76rem; font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 3px; word-break: break-word; }
+    .s-name {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 3px;
+      word-break: break-word;
+    }
     .s-role { font-size: 0.68rem; color: var(--muted); line-height: 1.4; margin-bottom: 4px; }
     .s-badge {
-      display: inline-block; font-size: 0.6rem; padding: 1px 6px;
-      border-radius: 20px; background: rgba(37,99,235,0.07);
-      color: var(--primary); border: 1px solid rgba(37,99,235,0.13);
-      max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      display: inline-block;
+      font-size: 0.6rem;
+      padding: 1px 6px;
+      border-radius: 20px;
+      background: rgba(37, 99, 235, 0.07);
+      color: var(--primary);
+      border: 1px solid rgba(37, 99, 235, 0.13);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .empty-msg {
-      grid-column: 1/-1; text-align: center;
-      color: var(--muted); padding: 60px 0; font-size: 0.95rem;
+      grid-column: 1/-1;
+      text-align: center;
+      color: var(--muted);
+      padding: 60px 0;
+      font-size: 0.95rem;
     }
 
     /* ── modal ── */
     .modal {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
-      display: flex; justify-content: center; align-items: center;
-      padding: 16px; opacity: 0; pointer-events: none;
-      transition: opacity 0.3s; z-index: 2000;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 2000;
     }
     .modal.open { opacity: 1; pointer-events: auto; }
     .modal.open .modal-box { transform: translateY(0) scale(1); }
     .modal-box {
-      background: var(--surface); color: var(--text);
-      border-radius: 20px; max-width: 460px; width: 100%;
-      padding: 34px 28px 26px; position: relative;
-      text-align: center; box-shadow: var(--shadow-lg);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 20px;
+      max-width: 460px;
+      width: 100%;
+      padding: 34px 28px 26px;
+      position: relative;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
       transform: translateY(24px) scale(0.97);
-      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-      max-height: 90vh; overflow-y: auto;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .modal-close {
-      position: absolute; top: 12px; right: 12px;
-      width: 30px; height: 30px; border-radius: 50%;
-      background: var(--surface-2); border: 1px solid var(--border);
-      color: var(--muted); font-size: 1.1rem;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: 0.2s;
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.2s;
     }
     .modal-close:hover { background: #fee2e2; color: #dc2626; }
 
     #modalImgWrap { margin: 0 auto 16px; width: 140px; height: 187px; }
     #modalImgWrap img {
-      width: 140px; height: 187px;
-      object-fit: cover; border-radius: 10px; display: block;
-      box-shadow: 0 6px 20px rgba(0,0,0,.15); border: 3px solid var(--border);
+      width: 140px;
+      height: 187px;
+      object-fit: cover;
+      border-radius: 10px;
+      display: block;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      border: 3px solid var(--border);
     }
     #modalImgWrap .ph {
-      width: 140px; height: 187px;
-      border-radius: 10px; border: 3px solid var(--border);
-      background: linear-gradient(135deg,#e2e8f0,#cbd5e1);
-      display: flex; align-items: center; justify-content: center; color: #94a3b8;
+      width: 140px;
+      height: 187px;
+      border-radius: 10px;
+      border: 3px solid var(--border);
+      background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
     }
-    body.dark #modalImgWrap .ph { background: linear-gradient(135deg,#1e2535,#253047); }
+    body.dark #modalImgWrap .ph { background: linear-gradient(135deg, #1e2535, #253047); }
 
-    .modal-name { font-family: "Noto Serif Thai",serif; font-size: 1.08rem; font-weight: 700; margin-bottom: 8px; word-break: break-word; }
+    .modal-name {
+      font-family: "Noto Serif Thai", serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
     .modal-info { display: flex; flex-direction: column; gap: 7px; margin-top: 14px; text-align: left; }
     .modal-row {
-      display: flex; gap: 10px; align-items: flex-start;
-      padding: 8px 12px; background: var(--surface-2);
-      border-radius: 8px; border: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 12px;
+      background: var(--surface-2);
+      border-radius: 8px;
+      border: 1px solid var(--border);
     }
     .modal-row .icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 2px; }
     .modal-row .lbl { font-size: 0.72rem; color: var(--muted); margin-bottom: 1px; }
     .modal-row .val { font-size: 0.87rem; font-weight: 600; color: var(--text); line-height: 1.4; }
 
-    /* ── responsive ── */
+    /* ════════════════════════════════
+       RESPONSIVE
+       ════════════════════════════════ */
+
     @media (max-width: 1100px) {
       .filter-sidebar { width: 200px; min-width: 200px; }
-      #staffContainer { grid-template-columns: repeat(auto-fill, minmax(128px,1fr)); }
+      #staffContainer { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); }
     }
+
+    /* ── Mobile ≤760px ── */
     @media (max-width: 760px) {
+      /* stack sidebar above content */
       .staff-page-wrap { flex-direction: column; }
+
+      /* sidebar: full width, collapsed by default */
       .filter-sidebar {
-        position: static; width: 100%; min-width: unset;
-        max-height: none; border-right: none; border-bottom: 1px solid var(--border);
+        position: static;
+        width: 100%;
+        min-width: 0;
+        max-height: 0;
+        overflow: hidden;
+        border-right: none;
+        border-bottom: none;
+        padding: 0 16px;
+        order: 2; /* appears AFTER the toggle button */
+        transition: max-height 0.32s ease, padding 0.32s ease;
       }
-      .filter-checkbox-group { flex-direction: row; flex-wrap: wrap; }
-      .staff-content { padding: 16px 12px 40px; }
-      #staffContainer { grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 10px; }
+      .filter-sidebar.sidebar-open {
+        max-height: 700px;
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+        overflow-y: auto;
+      }
+      /* hide h2 on mobile (toggle button labels it) */
+      .filter-sidebar h2 { display: none; }
+      .filter-checkbox-group { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+
+      /* toggle button: show on mobile */
+      .sidebar-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        order: 1;
+        width: 100%;
+        padding: 11px 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-top: none;
+        font-family: "Sarabun", sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--text-2);
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+      .sidebar-toggle-btn:hover { background: var(--surface-2); color: var(--primary); }
+      .sidebar-toggle-btn .arrow { transition: transform 0.25s ease; display: inline-block; font-style: normal; }
+      .sidebar-toggle-btn.open .arrow { transform: rotate(180deg); }
+
+      /* content: full width */
+      .staff-content { padding: 16px 12px 40px; width: 100%; order: 3; }
+
+      #staffContainer {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 10px;
+      }
     }
+
     @media (max-width: 480px) {
-      #staffContainer { grid-template-columns: repeat(2,1fr); gap: 9px; }
-      .s-img-wrap { width: 72px; height: 96px; }
-      .s-img-wrap img, .s-img-wrap .ph { width: 72px; height: 96px; }
+      .staff-content { padding: 12px 10px 36px; }
+      #staffContainer { grid-template-columns: repeat(2, 1fr); gap: 9px; }
+      .s-img-wrap,
+      .s-img-wrap img,
+      .s-img-wrap .ph { width: 72px; height: 96px; }
       .s-name { font-size: 0.73rem; }
       .sum-sep { display: none; }
+      .staff-summary-bar { gap: 8px; padding: 10px 12px; }
     }
+
     @media (max-width: 360px) {
-      #staffContainer { grid-template-columns: repeat(2,1fr); gap: 8px; }
+      #staffContainer { gap: 8px; }
       .staff-card { padding: 10px 6px 9px; }
+      .s-img-wrap,
+      .s-img-wrap img,
+      .s-img-wrap .ph { width: 64px; height: 85px; }
     }
   </style>
 </head>
@@ -232,7 +455,10 @@
   <div class="container header-inner">
     <a href="index.html" class="logo-area">
       <img src="assets/images/logo.jpg" alt="โลโก้">
-      <div class="brand"><h1>วิทยาลัยพณิชยการบางนา</h1><span>Bangna Commercial College</span></div>
+      <div class="brand">
+        <h1>วิทยาลัยพณิชยการบางนา</h1>
+        <span>Bangna Commercial College</span>
+      </div>
     </a>
     <nav class="nav" aria-label="เมนูหลัก">
       <ul class="nav-links">
@@ -255,15 +481,22 @@
   </div>
 </div>
 
+<!-- ── page body: sidebar + content wrapped together ── -->
 <div class="staff-page-wrap">
 
+  <!-- toggle button sits inside .staff-page-wrap so flex order works -->
+  <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-expanded="false" aria-controls="filterSidebar">
+    <span>🔍 ค้นหา / กรอง</span>
+    <span class="arrow">▼</span>
+  </button>
+
   <!-- sidebar -->
-  <aside class="filter-sidebar" aria-label="ตัวกรองบุคลากร">
+  <aside class="filter-sidebar" id="filterSidebar" aria-label="ตัวกรองบุคลากร">
     <h2>🔍 ค้นหา / กรอง</h2>
 
     <div class="filter-group">
       <div class="filter-group-title">ค้นหาชื่อ</div>
-      <input type="search" id="searchInput" class="filter-search" placeholder="พิมพ์ชื่อ...">
+      <input type="search" id="searchInput" class="filter-search" placeholder="พิมพ์ชื่อ..." autocomplete="off">
     </div>
 
     <div class="filter-group">
@@ -303,7 +536,8 @@
 
     <div id="staffContainer" role="tabpanel"></div>
   </div>
-</div>
+
+</div><!-- /.staff-page-wrap -->
 
 <!-- modal -->
 <div id="profileModal" class="modal" role="dialog" aria-modal="true">
@@ -325,7 +559,7 @@
 
 <script src="assets/js/staffdata.js"></script>
 <script>
-(function(){
+(function () {
   'use strict';
 
   /* ── placeholder SVG ── */
@@ -338,55 +572,78 @@
 
   /* ── gender detection ── */
   function getGender(name) {
-    if(!name) return 'อื่นๆ';
-    if(/^(นาย|Mr\.|MR\.|ว่าที่ร้อยตรี)/.test(name.trim())) return 'ชาย';
-    if(/^(นาง|นางสาว|Miss|MISS)/.test(name.trim())) return 'หญิง';
+    if (!name) return 'อื่นๆ';
+    if (/^(นาย|Mr\.|MR\.|ว่าที่ร้อยตรี)/.test(name.trim())) return 'ชาย';
+    if (/^(นาง|นางสาว|Miss|MISS)/.test(name.trim())) return 'หญิง';
     return 'อื่นๆ';
   }
 
-  /* ── flat list (ALL members, including image:null) ── */
+  /* ── flat list ── */
   var ALL = [];
-  Object.keys(staffCategoryData).forEach(function(key){
-    if(key === 'all') return; /* skip the combined tab, it references same objects */
+  Object.keys(staffCategoryData).forEach(function (key) {
+    if (key === 'all') return;
     var cat = staffCategoryData[key];
-    (cat.members || []).forEach(function(p){
+    (cat.members || []).forEach(function (p) {
       ALL.push(Object.assign({}, p, { catKey: key, catLabel: cat.label, gender: getGender(p.name) }));
     });
   });
   var TOTAL = ALL.length;
 
   /* ── dark mode ── */
-  (function(){
+  (function () {
     var btn = document.getElementById('darkToggle');
-    var apply = function(v){ document.body.classList.toggle('dark',v); localStorage.setItem('dark',v); if(btn) btn.textContent = v?'☀️':'🌙'; };
+    var apply = function (v) {
+      document.body.classList.toggle('dark', v);
+      localStorage.setItem('dark', v);
+      if (btn) btn.textContent = v ? '☀️' : '🌙';
+    };
     apply(localStorage.getItem('dark') === 'true');
-    if(btn) btn.addEventListener('click', function(){ apply(!document.body.classList.contains('dark')); });
+    if (btn) btn.addEventListener('click', function () { apply(!document.body.classList.contains('dark')); });
   })();
 
   /* ── mobile nav ── */
-  (function(){
+  (function () {
     var b = document.querySelector('.hamburger');
     var n = document.querySelector('.nav-links');
-    if(!b||!n) return;
-    b.addEventListener('click', function(){ n.classList.toggle('show'); });
-    document.querySelectorAll('.nav-links a').forEach(function(a){ a.addEventListener('click', function(){ n.classList.remove('show'); }); });
+    if (!b || !n) return;
+    b.addEventListener('click', function () { n.classList.toggle('show'); });
+    document.querySelectorAll('.nav-links a').forEach(function (a) {
+      a.addEventListener('click', function () { n.classList.remove('show'); });
+    });
+  })();
+
+  /* ── sidebar toggle (JS only wires the click; CSS controls visibility) ── */
+  (function () {
+    var btn     = document.getElementById('sidebarToggleBtn');
+    var sidebar = document.getElementById('filterSidebar');
+    if (!btn || !sidebar) return;
+    btn.addEventListener('click', function () {
+      var isOpen = sidebar.classList.toggle('sidebar-open');
+      btn.classList.toggle('open', isOpen);
+      btn.setAttribute('aria-expanded', String(isOpen));
+    });
   })();
 
   /* ── modal ── */
   var modal = document.getElementById('profileModal');
-  function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
-  modal.addEventListener('click', function(e){
-    if(e.target === modal || e.target.classList.contains('modal-close')) closeModal();
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal || e.target.classList.contains('modal-close')) closeModal();
   });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
   function openModal(p) {
     var wrap = document.getElementById('modalImgWrap');
     wrap.innerHTML = '';
-    if(p.image) {
+    if (p.image) {
       var img = document.createElement('img');
       img.alt = p.name;
-      img.addEventListener('error', function(){ wrap.innerHTML = ''; wrap.appendChild(makePh(54)); });
+      img.addEventListener('error', function () { wrap.innerHTML = ''; wrap.appendChild(makePh(54)); });
       img.src = p.image;
       wrap.appendChild(img);
     } else {
@@ -401,8 +658,8 @@
   }
 
   /* ── state ── */
-  var activeTab = Object.keys(staffCategoryData)[0]; /* 'all' */
-  var F = { search: '', gender: new Set(['ชาย','หญิง','อื่นๆ']), dept: new Set(), edu: new Set() };
+  var activeTab = Object.keys(staffCategoryData)[0];
+  var F = { search: '', gender: new Set(['ชาย', 'หญิง', 'อื่นๆ']), dept: new Set(), edu: new Set() };
 
   /* ── summary ── */
   function updateSummary(shown, tabTotal) {
@@ -413,90 +670,78 @@
     fi.innerHTML = shown < tabTotal ? '(กรองแล้ว: <strong>' + shown + '</strong> คน)' : '';
   }
 
-  /* ── build filter checkboxes ── */
+  /* ── get members ── */
+  function getTabMembers(key) {
+    if (key === 'all') {
+      return staffCategoryData.all.members.map(function (m) {
+        return Object.assign({}, m, { gender: getGender(m.name) });
+      });
+    }
+    return ALL.filter(function (m) { return m.catKey === key; });
+  }
+
+  /* ── build filters ── */
   function buildFilters() {
     var members = getTabMembers(activeTab);
 
-    /* gender counts */
     var gc = {};
-    members.forEach(function(m){ gc[m.gender] = (gc[m.gender]||0)+1; });
-    ['ชาย','หญิง','อื่นๆ'].forEach(function(g){
-      var el = document.getElementById('gc-'+g);
-      if(el) el.textContent = gc[g]||0;
+    members.forEach(function (m) { gc[m.gender] = (gc[m.gender] || 0) + 1; });
+    ['ชาย', 'หญิง', 'อื่นๆ'].forEach(function (g) {
+      var el = document.getElementById('gc-' + g);
+      if (el) el.textContent = gc[g] || 0;
     });
 
-    /* dept */
     var depts = [];
-    members.forEach(function(m){ if(m.department && depts.indexOf(m.department)<0) depts.push(m.department); });
+    members.forEach(function (m) { if (m.department && depts.indexOf(m.department) < 0) depts.push(m.department); });
     depts.sort();
     var db = document.getElementById('deptFilters');
     db.innerHTML = '';
-    if(F.dept.size === 0) depts.forEach(function(d){ F.dept.add(d); });
-    depts.forEach(function(dept){
-      var cnt = members.filter(function(m){ return m.department === dept; }).length;
-      var lbl = document.createElement('label');
-      lbl.className = 'filter-label';
+    if (F.dept.size === 0) depts.forEach(function (d) { F.dept.add(d); });
+    depts.forEach(function (dept) {
+      var cnt = members.filter(function (m) { return m.department === dept; }).length;
+      var lbl = document.createElement('label'); lbl.className = 'filter-label';
       var cb = document.createElement('input');
       cb.type = 'checkbox'; cb.value = dept; cb.dataset.filter = 'dept';
       cb.checked = F.dept.has(dept);
       cb.addEventListener('change', onFilter);
-      var txt = document.createTextNode(dept.replace(/^แผนกวิชา/,'') + ' ');
-      var cnt_el = document.createElement('span');
-      cnt_el.className = 'filter-count'; cnt_el.textContent = cnt;
-      lbl.appendChild(cb); lbl.appendChild(txt); lbl.appendChild(cnt_el);
+      var txt = document.createTextNode(dept.replace(/^แผนกวิชา/, '') + ' ');
+      var cntEl = document.createElement('span'); cntEl.className = 'filter-count'; cntEl.textContent = cnt;
+      lbl.appendChild(cb); lbl.appendChild(txt); lbl.appendChild(cntEl);
       db.appendChild(lbl);
     });
 
-    /* edu */
     var edus = [];
-    members.forEach(function(m){ var e = m.education||'ไม่ระบุ'; if(edus.indexOf(e)<0) edus.push(e); });
+    members.forEach(function (m) { var e = m.education || 'ไม่ระบุ'; if (edus.indexOf(e) < 0) edus.push(e); });
     edus.sort();
     var eb = document.getElementById('eduFilters');
     eb.innerHTML = '';
-    if(F.edu.size === 0) edus.forEach(function(e){ F.edu.add(e); });
-    edus.forEach(function(edu){
-      var cnt = members.filter(function(m){ return (m.education||'ไม่ระบุ') === edu; }).length;
-      var lbl = document.createElement('label');
-      lbl.className = 'filter-label';
+    if (F.edu.size === 0) edus.forEach(function (e) { F.edu.add(e); });
+    edus.forEach(function (edu) {
+      var cnt = members.filter(function (m) { return (m.education || 'ไม่ระบุ') === edu; }).length;
+      var lbl = document.createElement('label'); lbl.className = 'filter-label';
       var cb = document.createElement('input');
       cb.type = 'checkbox'; cb.value = edu; cb.dataset.filter = 'edu';
       cb.checked = F.edu.has(edu);
       cb.addEventListener('change', onFilter);
       var txt = document.createTextNode(edu + ' ');
-      var cnt_el = document.createElement('span');
-      cnt_el.className = 'filter-count'; cnt_el.textContent = cnt;
-      lbl.appendChild(cb); lbl.appendChild(txt); lbl.appendChild(cnt_el);
+      var cntEl = document.createElement('span'); cntEl.className = 'filter-count'; cntEl.textContent = cnt;
+      lbl.appendChild(cb); lbl.appendChild(txt); lbl.appendChild(cntEl);
       eb.appendChild(lbl);
     });
   }
 
-  /* ── get members for current tab ── */
-  function getTabMembers(key) {
-    if (key === 'all') {
-      /* For 'all' tab, use the combined list from staffCategoryData.all.members
-         but augment with catKey/catLabel/gender */
-      return staffCategoryData.all.members.map(function(m) {
-        return Object.assign({}, m, { gender: getGender(m.name) });
-      });
-    }
-    return ALL.filter(function(m){ return m.catKey === key; });
-  }
-
-  /* ── create card — แสดงทุกคน รวมถึง image:null ── */
+  /* ── create card ── */
   function makeCard(p) {
     var card = document.createElement('div');
     card.className = 'staff-card';
-    card.setAttribute('role','button');
-    card.setAttribute('tabindex','0');
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
 
-    var wrap = document.createElement('div');
-    wrap.className = 's-img-wrap';
-    if(p.image) {
+    var wrap = document.createElement('div'); wrap.className = 's-img-wrap';
+    if (p.image) {
       var img = document.createElement('img');
       img.alt = p.name; img.loading = 'lazy';
-      img.addEventListener('error', function(){
-        wrap.innerHTML = ''; wrap.appendChild(makePh(34));
-      });
+      img.addEventListener('error', function () { wrap.innerHTML = ''; wrap.appendChild(makePh(34)); });
       img.src = p.image;
       wrap.appendChild(img);
     } else {
@@ -504,64 +749,61 @@
     }
 
     var nm = document.createElement('div'); nm.className = 's-name'; nm.textContent = p.name;
-    var rl = document.createElement('div'); rl.className = 's-role'; rl.textContent = p.role||'';
-    var bd = document.createElement('span'); bd.className = 's-badge'; bd.textContent = (p.department||'').replace(/^แผนกวิชา/,'');
+    var rl = document.createElement('div'); rl.className = 's-role'; rl.textContent = p.role || '';
+    var bd = document.createElement('span'); bd.className = 's-badge'; bd.textContent = (p.department || '').replace(/^แผนกวิชา/, '');
 
     card.appendChild(wrap); card.appendChild(nm); card.appendChild(rl); card.appendChild(bd);
-    card.addEventListener('click', function(){ openModal(p); });
-    card.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' ') openModal(p); });
+    card.addEventListener('click', function () { openModal(p); });
+    card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') openModal(p); });
     return card;
   }
 
-  /* ── render grid ── */
+  /* ── render ── */
   function render() {
-    var box = document.getElementById('staffContainer');
+    var box     = document.getElementById('staffContainer');
     box.innerHTML = '';
-    var members = getTabMembers(activeTab);
+    var members  = getTabMembers(activeTab);
     var tabTotal = members.length;
 
-    /* detect actual active restrictions */
-    var tabDepts = []; members.forEach(function(m){ if(m.department && tabDepts.indexOf(m.department)<0) tabDepts.push(m.department); });
-    var tabEdus  = []; members.forEach(function(m){ var e=m.education||'ไม่ระบุ'; if(tabEdus.indexOf(e)<0) tabEdus.push(e); });
-    var deptRestrict = tabDepts.some(function(d){ return !F.dept.has(d); });
-    var eduRestrict  = tabEdus.some(function(e){ return !F.edu.has(e); });
+    var tabDepts = []; members.forEach(function (m) { if (m.department && tabDepts.indexOf(m.department) < 0) tabDepts.push(m.department); });
+    var tabEdus  = []; members.forEach(function (m) { var e = m.education || 'ไม่ระบุ'; if (tabEdus.indexOf(e) < 0) tabEdus.push(e); });
+    var deptRestrict = tabDepts.some(function (d) { return !F.dept.has(d); });
+    var eduRestrict  = tabEdus.some(function (e)  { return !F.edu.has(e);  });
 
-    var shown = members.filter(function(m){
-      var nameOk = m.name.toLowerCase().indexOf(F.search.toLowerCase()) >= 0;
-      var gOk    = F.gender.has(m.gender);
-      var dOk    = !deptRestrict || F.dept.has(m.department);
-      var eOk    = !eduRestrict  || F.edu.has(m.education||'ไม่ระบุ');
-      return nameOk && gOk && dOk && eOk;
+    var shown = members.filter(function (m) {
+      return m.name.toLowerCase().indexOf(F.search.toLowerCase()) >= 0
+        && F.gender.has(m.gender)
+        && (!deptRestrict || F.dept.has(m.department))
+        && (!eduRestrict  || F.edu.has(m.education || 'ไม่ระบุ'));
     });
 
     updateSummary(shown.length, tabTotal);
 
-    if(!shown.length) {
+    if (!shown.length) {
       var empty = document.createElement('p');
       empty.className = 'empty-msg';
       empty.textContent = 'ไม่พบบุคลากรที่ตรงกับเงื่อนไข';
       box.appendChild(empty);
       return;
     }
-    shown.forEach(function(p){ box.appendChild(makeCard(p)); });
+    shown.forEach(function (p) { box.appendChild(makeCard(p)); });
   }
 
   /* ── filter handler ── */
   function onFilter(e) {
-    var flt = e.target.dataset.filter;
-    var val = e.target.value;
-    var chk = e.target.checked;
-    if(flt==='gender') { chk ? F.gender.add(val) : F.gender.delete(val); }
-    else if(flt==='dept') { chk ? F.dept.add(val) : F.dept.delete(val); }
-    else if(flt==='edu')  { chk ? F.edu.add(val)  : F.edu.delete(val); }
+    var flt = e.target.dataset.filter, val = e.target.value, chk = e.target.checked;
+    if      (flt === 'gender') { chk ? F.gender.add(val) : F.gender.delete(val); }
+    else if (flt === 'dept')   { chk ? F.dept.add(val)   : F.dept.delete(val);   }
+    else if (flt === 'edu')    { chk ? F.edu.add(val)    : F.edu.delete(val);    }
     render();
   }
 
   /* ── reset ── */
   function reset() {
-    F = { search:'', gender: new Set(['ชาย','หญิง','อื่นๆ']), dept: new Set(), edu: new Set() };
-    var si = document.getElementById('searchInput'); if(si) si.value = '';
-    document.querySelectorAll('[data-filter="gender"]').forEach(function(cb){ cb.checked = true; });
+    F = { search: '', gender: new Set(['ชาย', 'หญิง', 'อื่นๆ']), dept: new Set(), edu: new Set() };
+    var si = document.getElementById('searchInput');
+    if (si) si.value = '';
+    document.querySelectorAll('[data-filter="gender"]').forEach(function (cb) { cb.checked = true; });
     buildFilters(); render();
   }
 
@@ -569,22 +811,25 @@
   function buildTabs() {
     var box = document.getElementById('staffTabs');
     box.innerHTML = '';
-    Object.keys(staffCategoryData).forEach(function(key){
+    Object.keys(staffCategoryData).forEach(function (key) {
       var cat = staffCategoryData[key];
-      var cnt = key === 'all' ? staffCategoryData.all.members.length
-                              : ALL.filter(function(m){ return m.catKey === key; }).length;
+      var cnt = key === 'all'
+        ? staffCategoryData.all.members.length
+        : ALL.filter(function (m) { return m.catKey === key; }).length;
+
       var btn = document.createElement('button');
-      btn.className = 'tab-btn' + (key===activeTab ? ' active' : '');
-      btn.setAttribute('role','tab');
+      btn.className = 'tab-btn' + (key === activeTab ? ' active' : '');
+      btn.setAttribute('role', 'tab');
       btn.textContent = cat.label;
-      var num = document.createElement('span');
-      num.className = 'tab-num'; num.textContent = cnt;
+
+      var num = document.createElement('span'); num.className = 'tab-num'; num.textContent = cnt;
       btn.appendChild(num);
-      btn.addEventListener('click', function(){
-        if(activeTab===key) return;
+
+      btn.addEventListener('click', function () {
+        if (activeTab === key) return;
         activeTab = key;
         F.dept = new Set(); F.edu = new Set();
-        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
         btn.classList.add('active');
         buildFilters(); render();
       });
@@ -593,19 +838,22 @@
   }
 
   /* ── init ── */
-  document.addEventListener('DOMContentLoaded', function(){
+  document.addEventListener('DOMContentLoaded', function () {
     document.body.classList.add('loaded');
     document.getElementById('totalAll').textContent = TOTAL;
     buildTabs(); buildFilters(); render();
 
     var si = document.getElementById('searchInput');
-    if(si) si.addEventListener('input', function(e){ F.search = e.target.value; render(); });
+    if (si) si.addEventListener('input', function (e) { F.search = e.target.value; render(); });
 
-    document.querySelectorAll('[data-filter="gender"]').forEach(function(cb){ cb.addEventListener('change', onFilter); });
+    document.querySelectorAll('[data-filter="gender"]').forEach(function (cb) {
+      cb.addEventListener('change', onFilter);
+    });
 
     var rb = document.getElementById('resetFilters');
-    if(rb) rb.addEventListener('click', reset);
+    if (rb) rb.addEventListener('click', reset);
   });
+
 })();
 </script>
 </body>

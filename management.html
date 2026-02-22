@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ผู้บริหาร - วิทยาลัยพณิชยการบางนา</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .mgmt-section { margin-bottom: 60px; }
+    .mgmt-section > h3 {
+      font-family: "Noto Serif Thai", serif;
+      font-size: 1.25rem; font-weight: 700; color: var(--primary);
+      text-align: center; margin-bottom: 32px;
+      padding-bottom: 12px; border-bottom: 2px solid var(--border);
+    }
+    .director-wrap { display: flex; justify-content: center; }
+    .deputy-wrap   { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+
+    .mgmt-card {
+      text-align: center; cursor: pointer;
+      background: var(--surface); border-radius: var(--radius);
+      padding: 22px 16px 20px; border: 1px solid var(--border);
+      box-shadow: var(--shadow); width: 200px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .director-wrap .mgmt-card { width: 230px; }
+    .mgmt-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .mgmt-card:focus-visible { outline: 3px solid var(--primary-light); outline-offset: 3px; }
+
+    .mgmt-img-wrap {
+      width: 130px; height: 173px;
+      margin: 0 auto 14px; overflow: hidden;
+      border-radius: 8px; border: 3px solid var(--border);
+      background: var(--surface-2);
+    }
+    .director-wrap .mgmt-img-wrap { width: 148px; height: 197px; }
+    .mgmt-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .mgmt-card:hover .mgmt-img-wrap img { transform: scale(1.04); }
+
+    /* placeholder — แสดงเมื่อรูปโหลดไม่ได้ */
+    .mgmt-img-wrap .ph {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg,#e2e8f0,#cbd5e1); color: #94a3b8;
+    }
+    body.dark .mgmt-img-wrap .ph { background: linear-gradient(135deg,#1e2535,#253047); }
+
+    .mgmt-name { font-size: 0.92rem; font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 5px; word-break: break-word; }
+    .mgmt-role { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+    /* reveal */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .reveal.active { opacity: 1; transform: none; }
+
+    /* modal */
+    .modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      display: flex; justify-content: center; align-items: center;
+      padding: 16px; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s; z-index: 2000;
+    }
+    .modal.open { opacity: 1; pointer-events: auto; }
+    .modal.open .modal-box { transform: translateY(0) scale(1); }
+    .modal-box {
+      background: var(--surface); color: var(--text);
+      border-radius: 20px; max-width: 460px; width: 100%;
+      padding: 34px 28px 26px; position: relative;
+      text-align: center; box-shadow: var(--shadow-lg);
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute; top: 12px; right: 12px;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--muted); font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: 0.2s;
+    }
+    .modal-close:hover { background: #fee2e2; color: #dc2626; }
+
+    /* modal image — ขนาดเต็ม ไม่หด */
+    #modalImgWrap { margin: 0 auto 16px; width: 140px; height: 187px; }
+    #modalImgWrap img {
+      width: 140px; height: 187px;
+      object-fit: cover; border-radius: 10px; display: block;
+      box-shadow: 0 6px 20px rgba(0,0,0,.15); border: 3px solid var(--border);
+    }
+    #modalImgWrap .ph {
+      width: 140px; height: 187px;
+      border-radius: 10px; border: 3px solid var(--border);
+      background: linear-gradient(135deg,#e2e8f0,#cbd5e1);
+      display: flex; align-items: center; justify-content: center; color: #94a3b8;
+    }
+    body.dark #modalImgWrap .ph { background: linear-gradient(135deg,#1e2535,#253047); }
+
+    .modal-name { font-family: "Noto Serif Thai",serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; word-break: break-word; }
+    .modal-info { display: flex; flex-direction: column; gap: 7px; margin-top: 14px; text-align: left; }
+    .modal-row {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 8px 12px; background: var(--surface-2);
+      border-radius: 8px; border: 1px solid var(--border);
+    }
+    .modal-row .icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 2px; }
+    .modal-row .lbl { font-size: 0.72rem; color: var(--muted); margin-bottom: 1px; }
+    .modal-row .val { font-size: 0.87rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+
+    @media (max-width: 600px) {
+      .deputy-wrap { gap: 14px; }
+      .mgmt-card { width: 155px; }
+      .director-wrap .mgmt-card { width: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo-area">
+      <img src="assets/images/logo.jpg" alt="โลโก้">
+      <div class="brand"><h1>วิทยาลัยพณิชยการบางนา</h1><span>Bangna Commercial College</span></div>
+    </a>
+    <nav class="nav" aria-label="เมนูหลัก">
+      <ul class="nav-links">
+        <li><a href="index.html">หน้าแรก</a></li>
+        <li><a href="management.html" class="active">ผู้บริหาร</a></li>
+        <li><a href="staff.html">บุคลากร</a></li>
+        <li><a href="students.html">นักเรียน/นักศึกษา</a></li>
+        <li><a href="programs.html">สาขาวิชา</a></li>
+      </ul>
+      <button id="darkToggle" class="toggle-btn" aria-label="สลับธีม">🌙</button>
+      <div class="hamburger" role="button" aria-label="เปิดเมนู" tabindex="0">☰</div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-banner">
+  <div class="container">
+    <h1>คณะผู้บริหาร</h1>
+    <p>ผู้นำในการพัฒนาการศึกษาวิชาชีพและการบริหารสถานศึกษา</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="mgmt-section">
+      <h3>ผู้อำนวยการสถานศึกษา</h3>
+      <div id="directorContainer" class="director-wrap"></div>
+    </div>
+    <div class="mgmt-section">
+      <h3>รองผู้อำนวยการ</h3>
+      <div id="deputyContainer" class="deputy-wrap"></div>
+    </div>
+  </div>
+</section>
+
+<div id="profileModal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <button class="modal-close" aria-label="ปิด">&times;</button>
+    <div id="modalImgWrap"></div>
+    <div class="modal-name" id="mName"></div>
+    <div class="modal-info">
+      <div class="modal-row"><span class="icon">🏅</span><div><div class="lbl">ตำแหน่ง</div><div class="val" id="mRole"></div></div></div>
+      <div class="modal-row"><span class="icon">🏢</span><div><div class="lbl">แผนก / หน่วยงาน</div><div class="val" id="mDept"></div></div></div>
+      <div class="modal-row"><span class="icon">🎓</span><div><div class="lbl">ระดับการศึกษา</div><div class="val" id="mEdu"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">© 2026 วิทยาลัยพณิชยการบางนา · Bangna Commercial College</div>
+</footer>
+
+<script src="assets/js/staffData.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  /* ── placeholder SVG (เรียกผ่าน function — ไม่ฝัง inline ใน attribute) ── */
+  function makePh(sz) {
+    const d = document.createElement('div');
+    d.className = 'ph';
+    d.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" width="' + sz + '" height="' + sz + '"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 20.5c0-4.1 3.8-7.5 8.5-7.5s8.5 3.4 8.5 7.5"/></svg>';
+    return d;
+  }
+
+  /* ── dark mode ── */
+  (function(){
+    const btn = document.getElementById('darkToggle');
+    const apply = function(v){ document.body.classList.toggle('dark',v); localStorage.setItem('dark',v); if(btn) btn.textContent = v ? '☀️' : '🌙'; };
+    apply(localStorage.getItem('dark') === 'true');
+    if(btn) btn.addEventListener('click', function(){ apply(!document.body.classList.contains('dark')); });
+  })();
+
+  /* ── mobile nav ── */
+  (function(){
+    const b = document.querySelector('.hamburger');
+    const n = document.querySelector('.nav-links');
+    if(!b||!n) return;
+    b.addEventListener('click', function(){ n.classList.toggle('show'); });
+    document.querySelectorAll('.nav-links a').forEach(function(a){ a.addEventListener('click', function(){ n.classList.remove('show'); }); });
+  })();
+
+  /* ── modal ── */
+  const modal = document.getElementById('profileModal');
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  modal.addEventListener('click', function(e){
+    if(e.target === modal || e.target.classList.contains('modal-close')) closeModal();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+
+  function openModal(p) {
+    const wrap = document.getElementById('modalImgWrap');
+    wrap.innerHTML = '';
+
+    if(p.image) {
+      const img = document.createElement('img');
+      img.alt = p.name;
+      img.addEventListener('error', function(){
+        wrap.innerHTML = '';
+        wrap.appendChild(makePh(54));
+      });
+      img.src = p.image; /* set src หลัง bind error */
+      wrap.appendChild(img);
+    } else {
+      wrap.appendChild(makePh(54));
+    }
+
+    document.getElementById('mName').textContent = p.name       || '—';
+    document.getElementById('mRole').textContent = p.role       || '—';
+    document.getElementById('mDept').textContent = p.department || '—';
+    document.getElementById('mEdu').textContent  = p.education  || '—';
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  /* ── reveal ── */
+  const obs = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('active'); obs.unobserve(e.target); } });
+  }, {threshold: 0.08});
+
+  /* ── create card ── */
+  function makeCard(p) {
+    const card = document.createElement('div');
+    card.className = 'mgmt-card reveal';
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+
+    /* image wrap */
+    const wrap = document.createElement('div');
+    wrap.className = 'mgmt-img-wrap';
+
+    if(p.image) {
+      const img = document.createElement('img');
+      img.alt = p.name;
+      img.loading = 'lazy';
+      img.addEventListener('error', function(){
+        wrap.innerHTML = '';
+        wrap.appendChild(makePh(42));
+      });
+      img.src = p.image;
+      wrap.appendChild(img);
+    } else {
+      wrap.appendChild(makePh(42));
+    }
+
+    const name = document.createElement('div');
+    name.className = 'mgmt-name';
+    name.textContent = p.name;
+
+    const role = document.createElement('div');
+    role.className = 'mgmt-role';
+    role.textContent = p.role || '';
+
+    card.appendChild(wrap);
+    card.appendChild(name);
+    card.appendChild(role);
+
+    card.addEventListener('click', function(){ openModal(p); });
+    card.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' ') openModal(p); });
+    return card;
+  }
+
+  /* ── render ── */
+  document.addEventListener('DOMContentLoaded', function(){
+    document.body.classList.add('loaded');
+
+    if(typeof staffData === 'undefined'){ console.error('staffData not loaded'); return; }
+
+    const dirBox = document.getElementById('directorContainer');
+    const depBox = document.getElementById('deputyContainer');
+
+    staffData.directors.forEach(function(p){
+      const c = makeCard(p);
+      dirBox.appendChild(c);
+      obs.observe(c);
+    });
+
+    staffData.deputies.forEach(function(p){
+      const c = makeCard(p);
+      depBox.appendChild(c);
+      obs.observe(c);
+    });
+  });
+})();
+</script>
+</body>
+</html>
